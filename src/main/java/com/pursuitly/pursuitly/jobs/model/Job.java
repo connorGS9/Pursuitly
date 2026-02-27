@@ -1,6 +1,5 @@
-package com.pursuitly.pursuitly.user.model;
+package com.pursuitly.pursuitly.jobs.model;
 
-import com.pursuitly.pursuitly.common.enums.ExperienceLevel;
 import com.pursuitly.pursuitly.common.enums.RemotePreference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -12,35 +11,38 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "user_profiles")
+@Table(name = "jobs")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserProfile {
+public class Job {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @OneToOne
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
-    private User user;
+    @Column(unique = true, nullable = false)
+    private String externalId;
 
-    private String desiredTitle;
+    private String title;
+    private String company;
 
-    @Enumerated(EnumType.STRING)
-    private ExperienceLevel experienceLevel;
+    @Column(columnDefinition = "TEXT")
+    private String description;
 
     private String location;
 
     @Enumerated(EnumType.STRING)
-    private RemotePreference remotePreference;
+    private RemotePreference remoteType;
 
-    private Integer salaryMin;
+    private String salaryRange;
+    private String source;
 
     @Column(columnDefinition = "TEXT")
-    private String summary;
+    private String applyUrl;
+
+    private LocalDateTime postedAt;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

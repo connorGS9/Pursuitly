@@ -1,7 +1,7 @@
 package com.pursuitly.pursuitly.user.dto;
 
-import com.pursuitly.pursuitly.user.model.enums.ExperienceLevel;
-import com.pursuitly.pursuitly.user.model.enums.RemotePreference;
+import com.pursuitly.pursuitly.common.enums.ExperienceLevel;
+import com.pursuitly.pursuitly.common.enums.RemotePreference;
 import lombok.Builder;
 import lombok.Data;
 
