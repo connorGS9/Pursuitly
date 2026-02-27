@@ -1,5 +1,6 @@
 package com.pursuitly.pursuitly.user;
 
+import com.pursuitly.pursuitly.user.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

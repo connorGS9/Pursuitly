@@ -1,4 +1,4 @@
-package com.pursuitly.pursuitly.user;
+package com.pursuitly.pursuitly.user.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;

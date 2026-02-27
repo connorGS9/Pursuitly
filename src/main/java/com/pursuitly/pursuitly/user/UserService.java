@@ -1,5 +1,6 @@
 package com.pursuitly.pursuitly.user;
 
+import com.pursuitly.pursuitly.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
