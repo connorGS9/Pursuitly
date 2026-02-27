@@ -1,0 +1,9 @@
+spring.datasource.url=jdbc:postgresql://localhost:5432/pursuitly
+spring.datasource.username=your_username
+spring.datasource.password=your_password
+jwt.secret=your_256_bit_secret
+jwt.expiration=86400000
+jsearch.api.key=your_rapidapi_key
+jsearch.api.host=jsearch.p.rapidapi.com
+jsearch.api.url=https://jsearch.p.rapidapi.com/search
+spring.jpa.open-in-view=false
