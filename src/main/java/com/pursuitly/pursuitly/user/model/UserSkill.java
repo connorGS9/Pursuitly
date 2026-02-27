@@ -1,7 +1,7 @@
 package com.pursuitly.pursuitly.user.model;
 
-import com.pursuitly.pursuitly.user.model.enums.Proficiency;
-import com.pursuitly.pursuitly.user.model.enums.SkillCategory;
+import com.pursuitly.pursuitly.common.enums.Proficiency;
+import com.pursuitly.pursuitly.common.enums.SkillCategory;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

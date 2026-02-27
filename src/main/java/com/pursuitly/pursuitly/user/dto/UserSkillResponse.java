@@ -1,7 +1,7 @@
 package com.pursuitly.pursuitly.user.dto;
 
-import com.pursuitly.pursuitly.user.model.enums.Proficiency;
-import com.pursuitly.pursuitly.user.model.enums.SkillCategory;
+import com.pursuitly.pursuitly.common.enums.Proficiency;
+import com.pursuitly.pursuitly.common.enums.SkillCategory;
 import lombok.Builder;
 import lombok.Data;
 
