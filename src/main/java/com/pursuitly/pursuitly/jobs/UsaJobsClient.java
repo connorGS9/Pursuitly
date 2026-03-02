@@ -36,7 +36,6 @@ public class UsaJobsClient implements JobApiClient{
 
     @Override
     public List<Job> searchJobs(String query) {
-        try {
             System.out.println("Calling UsaJobs for: " + query);
 
             Map<String, Object> response = webClient
@@ -68,9 +67,6 @@ public class UsaJobsClient implements JobApiClient{
                         .filter(job -> job != null)
                         .toList();
             }
-        } catch (Exception e) {
-            System.out.println("USAJobs error: " + e.getMessage());
-        }
         return new ArrayList<>();
     }
 

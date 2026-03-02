@@ -34,3 +34,4 @@ build/
 
 ### App properties / API key ###
 application.properties
+.env

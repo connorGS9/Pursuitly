@@ -47,6 +47,9 @@ public class Job {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(columnDefinition = "vector(1536)") // PGvector embedding
+    private float[] embedding;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

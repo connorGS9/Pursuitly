@@ -7,6 +7,7 @@ import com.pursuitly.pursuitly.user.model.User;
 import com.pursuitly.pursuitly.user.model.UserExperience;
 import com.pursuitly.pursuitly.user.model.UserProfile;
 import com.pursuitly.pursuitly.user.model.UserSkill;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -78,12 +79,12 @@ public class UserProfileService {
     }
     public UserProfile getProfile(UUID userId) {
         return userProfileRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Profile not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Profile not found"));
     }
 
     public UserSkill addSkill(UUID userId, UserSkill skill) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
         skill.setUser(user);
         return userSkillRepository.save(skill);
     }
@@ -98,7 +99,7 @@ public class UserProfileService {
 
     public UserExperience addExperience(UUID userId, UserExperience experience) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
         experience.setUser(user);
         return userExperienceRepository.save(experience);
     }

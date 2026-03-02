@@ -2,6 +2,7 @@ package com.pursuitly.pursuitly.coverLetter;
 
 import com.pursuitly.pursuitly.jobs.JobsRepository;
 import com.pursuitly.pursuitly.jobs.model.Job;
+import com.pursuitly.pursuitly.rateLimiting.RateLimitService;
 import com.pursuitly.pursuitly.user.UserExperienceRepository;
 import com.pursuitly.pursuitly.user.UserProfileRepository;
 import com.pursuitly.pursuitly.user.UserRepository;
@@ -9,6 +10,7 @@ import com.pursuitly.pursuitly.user.UserSkillRepository;
 import com.pursuitly.pursuitly.user.model.User;
 import com.pursuitly.pursuitly.user.model.UserExperience;
 import com.pursuitly.pursuitly.user.model.UserSkill;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +34,7 @@ public class CoverLetterService {
     private final UserSkillRepository userSkillRepository;
     private final UserExperienceRepository userExperienceRepository;
     private final UserProfileRepository userProfileRepository;
+    private final RateLimitService rateLimitService;
 
     private final WebClient webClient = WebClient.builder().build();
 
@@ -40,10 +43,14 @@ public class CoverLetterService {
     public String generateCoverLetter(UUID jobId) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        if (!rateLimitService.tryConsume(user.getId().toString())) { //Rate limiter 5 requests per user per day
+            throw new RuntimeException("Daily cover letter limit reached. Try again tomorrow.");
+        }
 
         Job job = jobsRepository.findById(jobId)
-                .orElseThrow(() -> new RuntimeException("Job not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Job not found"));
 
         List<UserSkill> skills = userSkillRepository.findAllByUserId(user.getId());
         List<UserExperience> experiences = userExperienceRepository.findAllByUserIdOrderByStartDateDesc(user.getId());

@@ -37,7 +37,6 @@ public class JsearchClient implements JobApiClient{
 
     @Override
     public List<Job> searchJobs(String query) {
-        try {
             WebClient.RequestHeadersSpec<?> request = webClient
                     .get()
                     .uri(apiUrl + "?query=" + query + "&num_pages=3") // Hardcode 3 pages
@@ -56,9 +55,7 @@ public class JsearchClient implements JobApiClient{
                         .filter(job -> job != null)
                         .toList();
             }
-        } catch (Exception e) {
-            System.out.println("JSearch API error: " + e.getMessage());
-        }
+
         return new ArrayList<>();
     }
 

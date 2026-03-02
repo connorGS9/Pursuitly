@@ -6,6 +6,7 @@ import com.pursuitly.pursuitly.jobs.JobsRepository;
 import com.pursuitly.pursuitly.jobs.model.Job;
 import com.pursuitly.pursuitly.user.UserRepository;
 import com.pursuitly.pursuitly.user.model.User;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -24,9 +25,9 @@ public class ApplicationService {
     public Application applyToJob(UUID jobId) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
         Job job = jobsRepository.findById(jobId)
-                .orElseThrow(() -> new RuntimeException("Job not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Job not found"));
 
         if (applicationRepository.existsByUserAndJob(user, job)) {
             throw new RuntimeException("Already applied for this job");
@@ -43,7 +44,7 @@ public class ApplicationService {
     public List<Application> getUserApplications() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
         return applicationRepository.findByUser(user);
     }
@@ -51,9 +52,9 @@ public class ApplicationService {
     public Application updateStatus(UUID applicationId, ApplicationStatus status) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
         Application application = applicationRepository.findById(applicationId)
-                .orElseThrow(() -> new RuntimeException("Application not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Application not found"));
 
         if (!application.getUser().getId().equals(user.getId())) {
             throw new RuntimeException("Unauthorized for this application");
@@ -66,10 +67,10 @@ public class ApplicationService {
     public void deleteApplication(UUID applicationId) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
         Application application = applicationRepository.findById(applicationId)
-                .orElseThrow(() -> new RuntimeException("Application not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Application not found"));
 
         if (!application.getUser().getId().equals(user.getId())) {
             throw new RuntimeException("Unauthorized");

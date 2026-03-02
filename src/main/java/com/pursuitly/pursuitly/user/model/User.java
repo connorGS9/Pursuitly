@@ -42,6 +42,9 @@ public class User {
     @Column(columnDefinition = "TEXT")
     private String coverLetterUrl;
 
+    @Column(columnDefinition = "float4[]")
+    private float[] embedding;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

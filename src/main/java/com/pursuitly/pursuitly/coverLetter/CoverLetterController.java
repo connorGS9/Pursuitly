@@ -17,7 +17,6 @@ public class CoverLetterController {
 
     @PostMapping("/generate")
     public ResponseEntity<String> generate(@RequestParam UUID jobId) {
-        return ResponseEntity.ok(coverLetterService.generateCoverLetter(jobId));
+            return ResponseEntity.ok(coverLetterService.generateCoverLetter(jobId));
+        }
     }
-
-}

@@ -36,7 +36,6 @@ public class AdzunaClient implements JobApiClient{
 
     @Override
     public List<Job> searchJobs(String query) {
-        try {
             System.out.println("Calling Adzuna for: " + query);
 
             Map<String, Object> response = webClient
@@ -66,9 +65,6 @@ public class AdzunaClient implements JobApiClient{
                         .filter(job -> job != null)
                         .toList();
             }
-        } catch (Exception e) {
-            System.out.println("Adzuna error: " + e.getMessage());
-        }
         return new ArrayList<>();
     }
 

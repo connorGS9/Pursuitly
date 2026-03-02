@@ -1,5 +1,6 @@
 package com.pursuitly.pursuitly.jobs;
 
+import com.pursuitly.pursuitly.embedding.EmbeddingService;
 import com.pursuitly.pursuitly.jobs.model.Job;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -15,6 +16,7 @@ public class JobAggregatorService {
 
     private final List<JobApiClient> jobApiClients;
     private final JobsRepository jobRepository;
+    private final EmbeddingService embeddingService;
     // At 8am and 8 pm every day run this scheduled service
     @Scheduled(cron= "0 0 8 * * *") // cron "second, minute, hour, day-of-month, month, day-of-week"
     public void aggregateJobs() {
@@ -39,6 +41,11 @@ public class JobAggregatorService {
         if (job.getExternalId() == null
                 || jobRepository.existsByExternalId(job.getExternalId())) {
             return;
+        }
+
+        if (job.getDescription() != null && !job.getDescription().isBlank()) { // Generate embedding for job description
+            float[] embedding = embeddingService.generateEmbedding(job.getDescription());
+            job.setEmbedding(embedding);
         }
         jobRepository.save(job);
     }

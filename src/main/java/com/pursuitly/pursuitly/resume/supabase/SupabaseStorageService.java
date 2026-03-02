@@ -45,8 +45,7 @@ public class SupabaseStorageService {
         return supabaseUrl + "/storage/v1" + signedPath;
     }
 
-    public String uploadResume(MultipartFile resume, String userId) {
-        try {
+    public String uploadResume(MultipartFile resume, String userId) throws IOException {
             String fileName = userId + "/resume.pdf";
             byte[] fileBytes = resume.getBytes();
             String response = WebClient.builder().build()
@@ -66,9 +65,5 @@ public class SupabaseStorageService {
                     .block();
 
             return getSignedUrl(userId);
-
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to upload resume: " + e.getMessage());
-        }
     }
 }
