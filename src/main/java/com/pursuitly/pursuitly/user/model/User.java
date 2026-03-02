@@ -36,6 +36,12 @@ public class User {
 
     private LocalDateTime lastLogin;
 
+    @Column(columnDefinition = "TEXT")
+    private String resumeUrl;
+
+    @Column(columnDefinition = "TEXT")
+    private String coverLetterUrl;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
