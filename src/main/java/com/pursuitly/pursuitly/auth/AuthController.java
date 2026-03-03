@@ -3,6 +3,7 @@ package com.pursuitly.pursuitly.auth;
 import com.pursuitly.pursuitly.auth.dto.LoginRequest;
 import com.pursuitly.pursuitly.auth.dto.RegisterRequest;
 import com.pursuitly.pursuitly.user.UserService;
+import com.pursuitly.pursuitly.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,7 +32,8 @@ public class AuthController {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
-        String token = jwtUtil.generateToken(request.getEmail());
+        User user = userService.getUserByEmail(request.getEmail());
+        String token = jwtUtil.generateToken(request.getEmail(), user.getRole());
         return ResponseEntity.ok(token);
     }
 }

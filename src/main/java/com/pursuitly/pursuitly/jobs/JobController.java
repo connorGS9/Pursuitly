@@ -13,10 +13,7 @@ import java.util.Map;
 @RequestMapping("/api/jobs")
 @RequiredArgsConstructor
 public class JobController {
-    private final JsearchClient jsearchClient;
     private final JobAggregatorService jobAggregatorService;
-    private final AdzunaClient adzunaClient;
-    private final UsaJobsClient usaJobsClient;
     private final JobsRepository jobsRepository;
 
     @PostMapping("/aggregate")
@@ -25,19 +22,6 @@ public class JobController {
         return ResponseEntity.ok("Aggregation complete");
     }
 
-    @PostMapping("/aggregate/adzuna")
-    public ResponseEntity<String> testAdzuna() {
-        List<Job> jobs = adzunaClient.searchJobs("software engineer");
-        System.out.println("Adzuna returned: " + jobs.size() + " jobs");
-        return ResponseEntity.ok("Adzuna returned: " + jobs.size() + " jobs");
-    }
-
-    @PostMapping("/aggregate/usajobs")
-    public ResponseEntity<String> testUsajobs() {
-        List<Job> jobs = usaJobsClient.searchJobs("software engineer");
-        System.out.println("USAJobs returned: " + jobs.size() + " jobs");
-        return ResponseEntity.ok("USAJobs returned: " + jobs.size() + " jobs");
-    }
 
     // When trying to get jobs, you can search by three non-required parameters: title, location, salary to narrow search down
     @GetMapping

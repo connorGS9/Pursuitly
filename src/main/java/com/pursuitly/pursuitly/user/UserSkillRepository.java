@@ -9,4 +9,6 @@ import java.util.UUID;
 public interface UserSkillRepository extends JpaRepository<UserSkill, UUID> {
     List<UserSkill> findAllByUserId(UUID userId);
     void deleteByIdAndUserId(UUID id, UUID userId);
+
+    void deleteAllByUserId(UUID userId);
 }

@@ -1,5 +1,6 @@
 package com.pursuitly.pursuitly.user.model;
 
+import com.pursuitly.pursuitly.common.enums.Role;
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -41,6 +42,10 @@ public class User {
 
     @Column(columnDefinition = "TEXT")
     private String coverLetterUrl;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role = Role.USER;
 
     @Column(columnDefinition = "float4[]")
     private float[] embedding;

@@ -1,12 +1,14 @@
 package com.pursuitly.pursuitly.user;
 
-import com.pursuitly.pursuitly.user.dto.UserExperienceResponse;
-import com.pursuitly.pursuitly.user.dto.UserProfileResponse;
-import com.pursuitly.pursuitly.user.dto.UserSkillResponse;
+import com.pursuitly.pursuitly.embedding.EmbeddingService;
+import com.pursuitly.pursuitly.jobs.JobMatchController;
+import com.pursuitly.pursuitly.jobs.JobMatchService;
+import com.pursuitly.pursuitly.user.dto.*;
 import com.pursuitly.pursuitly.user.model.User;
 import com.pursuitly.pursuitly.user.model.UserExperience;
 import com.pursuitly.pursuitly.user.model.UserProfile;
 import com.pursuitly.pursuitly.user.model.UserSkill;
+import jakarta.persistence.Embeddable;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,22 +24,25 @@ public class UserProfileService {
     private final UserSkillRepository userSkillRepository;
     private final UserExperienceRepository userExperienceRepository;
     private final UserRepository userRepository;
+    private final JobMatchService jobMatchService;
 
-    public UserProfile createOrUpdateProfile(UUID userId, UserProfile profileData) {
+    public UserProfile createOrUpdateProfile(UUID userId, UserProfileRequest request) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
         UserProfile profile = userProfileRepository.findByUserId(userId)
                 .orElse(UserProfile.builder().user(user).build());
 
-        profile.setDesiredTitle(profileData.getDesiredTitle());
-        profile.setExperienceLevel(profileData.getExperienceLevel());
-        profile.setLocation(profileData.getLocation());
-        profile.setRemotePreference(profileData.getRemotePreference());
-        profile.setSalaryMin(profileData.getSalaryMin());
-        profile.setSummary(profileData.getSummary());
+        profile.setDesiredTitle(request.getDesiredTitle());
+        profile.setExperienceLevel(request.getExperienceLevel());
+        profile.setLocation(request.getLocation());
+        profile.setRemotePreference(request.getRemotePreference());
+        profile.setSalaryMin(request.getSalaryMin());
+        profile.setSummary(request.getSummary());
 
-        return userProfileRepository.save(profile);
+        UserProfile saved = userProfileRepository.save(profile);
+        jobMatchService.updateUserEmbedding();
+        return saved;
     }
 
     // Build a DTO to return user profile to client that doesn't include hashed password, etc.
@@ -97,11 +102,46 @@ public class UserProfileService {
         userSkillRepository.deleteByIdAndUserId(skillId, userId);
     }
 
-    public UserExperience addExperience(UUID userId, UserExperience experience) {
+    public List<UserSkill> bulkUpdateSkills(UUID userId, List<UserSkillRequest> skillRequests) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
-        experience.setUser(user);
-        return userExperienceRepository.save(experience);
+
+        userSkillRepository.deleteAllByUserId(userId);
+
+        List<UserSkill> skills = skillRequests.stream()
+                .map(req -> UserSkill.builder()
+                        .user(user)
+                        .skillName(req.getSkillName())
+                        .category(req.getCategory())
+                        .proficiency(req.getProficiency())
+                        .yearsExperience(req.getYearsExperience())
+                        .build())
+                .toList();
+
+        List<UserSkill> saved = userSkillRepository.saveAll(skills);
+        return saved;
+    }
+
+    public List<UserExperience> bulkUpdateExperience(UUID userId, List<UserExperienceRequest> experienceRequests) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        userExperienceRepository.deleteAllByUserId(userId);
+
+        List<UserExperience> experiences = experienceRequests.stream()
+                .map(req -> UserExperience.builder()
+                        .user(user)
+                        .company(req.getCompany())
+                        .title(req.getTitle())
+                        .startDate(req.getStartDate())
+                        .endDate(req.getEndDate())
+                        .current(req.isCurrent())
+                        .bullets(req.getBullets())
+                        .build())
+                .toList();
+
+        List<UserExperience> saved = userExperienceRepository.saveAll(experiences);
+        return saved;
     }
 
     public List<UserExperience> getExperience(UUID userId) {

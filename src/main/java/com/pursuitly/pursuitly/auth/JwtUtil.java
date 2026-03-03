@@ -1,5 +1,6 @@
 package com.pursuitly.pursuitly.auth;
 
+import com.pursuitly.pursuitly.common.enums.Role;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -20,9 +21,10 @@ private String secret;
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
     }
 
-    public String generateToken(String email) {
+    public String generateToken(String email, Role role) {
         return Jwts.builder()
                 .subject(email)
+                .claim("role", role.name())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSigningKey())
@@ -45,6 +47,15 @@ private String secret;
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public String extractRole(String token) {
+        return Jwts.parser()
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .get("role", String.class);
     }
 
 }

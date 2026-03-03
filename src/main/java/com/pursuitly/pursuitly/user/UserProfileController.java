@@ -1,8 +1,6 @@
 package com.pursuitly.pursuitly.user;
 
-import com.pursuitly.pursuitly.user.dto.UserExperienceResponse;
-import com.pursuitly.pursuitly.user.dto.UserProfileResponse;
-import com.pursuitly.pursuitly.user.dto.UserSkillResponse;
+import com.pursuitly.pursuitly.user.dto.*;
 import com.pursuitly.pursuitly.user.model.UserExperience;
 import com.pursuitly.pursuitly.user.model.UserProfile;
 import com.pursuitly.pursuitly.user.model.UserSkill;
@@ -40,16 +38,25 @@ public class UserProfileController {
        return ResponseEntity.ok(userProfileService.toResponse(profile));
     }
 
-    @PostMapping //Update or create a profile for user from request body + principal of user, return dto to client
-    public ResponseEntity<UserProfileResponse> createOrUpdateProfile(@RequestBody UserProfile profile, Principal principal) {
-        UserProfile saved = userProfileService.createOrUpdateProfile(getCurrentUserId(principal), profile);
+    @PostMapping
+    public ResponseEntity<UserProfileResponse> createOrUpdateProfile(
+            @RequestBody UserProfileRequest request, Principal principal) {
+        UserProfile saved = userProfileService.createOrUpdateProfile(getCurrentUserId(principal), request);
         return ResponseEntity.ok(userProfileService.toResponse(saved));
     }
 
-    @PostMapping("/skills") //Add a skill to user from principal authentication
-    public ResponseEntity<UserSkillResponse> addSkill(@RequestBody UserSkill skill, Principal principal) {
-        UserSkill saved = userProfileService.addSkill(getCurrentUserId(principal), skill);
-        return ResponseEntity.ok(userProfileService.toSkillResponse(saved));
+    @PostMapping("/skills/bulk")
+    public ResponseEntity<List<UserSkillResponse>> bulkUpdateSkills(
+            @RequestBody List<UserSkillRequest> skills, Principal principal) {
+        List<UserSkill> saved = userProfileService.bulkUpdateSkills(getCurrentUserId(principal), skills);
+        return ResponseEntity.ok(saved.stream().map(userProfileService::toSkillResponse).toList());
+    }
+
+    @PostMapping("/experience/bulk")
+    public ResponseEntity<List<UserExperienceResponse>> bulkUpdateExperience(
+            @RequestBody List<UserExperienceRequest> experiences, Principal principal) {
+        List<UserExperience> saved = userProfileService.bulkUpdateExperience(getCurrentUserId(principal), experiences);
+        return ResponseEntity.ok(saved.stream().map(userProfileService::toExperienceResponse).toList());
     }
 
     @GetMapping("/skills") //Get list of skills for this authenticated user
@@ -64,12 +71,6 @@ public class UserProfileController {
     public ResponseEntity<Void> deleteSkill(@PathVariable UUID skillId, Principal principal) {
         userProfileService.deleteSkill(skillId, getCurrentUserId(principal));
         return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping("/experience") //Add job experience for this authenticated user
-    public ResponseEntity<UserExperienceResponse> addExperience(@RequestBody UserExperience experience, Principal principal) {
-        UserExperience saved = userProfileService.addExperience(getCurrentUserId(principal), experience);
-        return ResponseEntity.ok(userProfileService.toExperienceResponse(saved));
     }
 
     @GetMapping("/experience") //GET the experiences of this user

@@ -1,5 +1,6 @@
 package com.pursuitly.pursuitly.user;
 
+import com.pursuitly.pursuitly.common.enums.Role;
 import com.pursuitly.pursuitly.user.model.User;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ public class UserService implements UserDetailsService {
                 .email(email)
                 .fullName(fullName)
                 .passwordHash(passwordEncoder.encode(password))
+                .role(Role.USER)
                 .build();
 
         return userRepository.save(user);
@@ -37,7 +39,12 @@ public class UserService implements UserDetailsService {
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getEmail())
                 .password(user.getPasswordHash())
-                .authorities("ROLE_USER")
+                .authorities("ROLE_" + user.getRole().name())
                 .build();
+    }
+
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
     }
 }

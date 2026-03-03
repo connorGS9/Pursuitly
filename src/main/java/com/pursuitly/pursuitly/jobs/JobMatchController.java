@@ -13,12 +13,6 @@ import java.util.Map;
 public class JobMatchController {
     private final JobMatchService jobMatchService;
 
-    @PostMapping("/update-embedding")
-    public ResponseEntity<String> updateEmbedding() {
-        jobMatchService.updateUserEmbedding();
-        return ResponseEntity.ok("User embedding updated");
-    }
-
     @GetMapping("/jobs")
     public ResponseEntity<List<Map<String, Object>>> getMatchedJobs(
             @RequestParam(defaultValue = "20") int limit) {
