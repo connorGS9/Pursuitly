@@ -10,6 +10,7 @@ import com.pursuitly.pursuitly.user.model.UserProfile;
 import com.pursuitly.pursuitly.user.model.UserSkill;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -102,6 +103,7 @@ public class UserProfileService {
         userSkillRepository.deleteByIdAndUserId(skillId, userId);
     }
 
+    @Transactional
     public List<UserSkill> bulkUpdateSkills(UUID userId, List<UserSkillRequest> skillRequests) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
@@ -121,7 +123,7 @@ public class UserProfileService {
         List<UserSkill> saved = userSkillRepository.saveAll(skills);
         return saved;
     }
-
+    @Transactional
     public List<UserExperience> bulkUpdateExperience(UUID userId, List<UserExperienceRequest> experienceRequests) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
@@ -144,6 +146,7 @@ public class UserProfileService {
         return saved;
     }
 
+    @Transactional
     public List<UserExperience> getExperience(UUID userId) {
         return userExperienceRepository.findAllByUserIdOrderByStartDateDesc(userId);
     }

@@ -22,6 +22,11 @@ public class JobController {
         return ResponseEntity.ok("Aggregation complete");
     }
 
+    @PostMapping("/aggregateJsearch")
+    public ResponseEntity<String> triggerJsearch() {
+        jobAggregatorService.aggregateJsearchJobs();
+        return ResponseEntity.ok("Jsearch Aggregation complete");
+    }
 
     // When trying to get jobs, you can search by three non-required parameters: title, location, salary to narrow search down
     @GetMapping

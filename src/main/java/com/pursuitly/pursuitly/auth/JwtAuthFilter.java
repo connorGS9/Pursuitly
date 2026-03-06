@@ -43,6 +43,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             UserDetails userDetails = userService.loadUserByUsername(email);
 
             String role = jwtUtil.extractRole(token);
+            System.out.println("AUTH - email: " + email + " role: " + role);
             List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
             UsernamePasswordAuthenticationToken authToken =
                     new UsernamePasswordAuthenticationToken(userDetails, null, authorities);

@@ -33,7 +33,7 @@ public class UserExperience {
     private LocalDate startDate;
     private LocalDate endDate;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "experience_bullets", joinColumns = @JoinColumn(name = "experience_id"))
     @Column(name = "bullet", columnDefinition = "TEXT")
     private List<String> bullets;

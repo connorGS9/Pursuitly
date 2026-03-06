@@ -1,5 +1,6 @@
 package com.pursuitly.pursuitly.jobs.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pursuitly.pursuitly.common.enums.RemotePreference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -47,7 +48,8 @@ public class Job {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(columnDefinition = "vector(1536)") // PGvector embedding
+    @JsonIgnore
+    @Transient
     private float[] embedding;
 
     @PrePersist

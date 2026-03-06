@@ -1,5 +1,6 @@
 package com.pursuitly.pursuitly.user.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pursuitly.pursuitly.common.enums.Role;
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
@@ -47,8 +48,9 @@ public class User {
     @Column(nullable = false)
     private Role role = Role.USER;
 
-    @Column(columnDefinition = "float4[]")
-    private float[] embedding;
+    @JsonIgnore
+    @Column(columnDefinition = "TEXT")
+    private String embedding;
 
     @PrePersist
     protected void onCreate() {

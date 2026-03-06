@@ -41,7 +41,8 @@ public class JobMatchService {
         UserProfile profile = userProfileRepository.findByUserId(user.getId()).orElse(null);
 
         float[] embedding = embeddingService.generateUserEmbedding(user, skills, experiences, profile);
-        user.setEmbedding(embedding);
+        System.out.println("Generated embedding length: " + (embedding != null ? embedding.length : "NULL"));
+        user.setEmbedding(Arrays.toString(embedding));
         userRepository.save(user);
     }
 
@@ -52,11 +53,12 @@ public class JobMatchService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         if (user.getEmbedding() == null) {
-            throw new RuntimeException("User embedding not found, please update your profile first");
+           return List.of();
         }
 
-        String vectorStr = Arrays.toString(user.getEmbedding());
-
+        String vectorStr = "[" + user.getEmbedding().substring(1, user.getEmbedding().length() - 1) + "]";
+        System.out.println("Vector string length: " + vectorStr.length());
+        System.out.println("Vector string start: " + vectorStr.substring(0, 50));
         List<Object[]> results = entityManager.createNativeQuery(
                         "SELECT id, title, company, location, salary_range, " +
                                 "1 - (embedding <=> CAST(:embedding AS vector)) as match_score " +
