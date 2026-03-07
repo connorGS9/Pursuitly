@@ -58,7 +58,9 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
             config.setAllowedOrigins(List.of(
                     "http://localhost:5173",
-                    "http://localhost:4173"          // vite preview
+                    "http://localhost:4173",
+                    "https://pursuitly.app",
+                    "https://www.pursuitly.app"
                     ));
             config.setAllowedOriginPatterns(List.of(
                     "https://pursuitly.vercel.app",  // main vercel deployment
